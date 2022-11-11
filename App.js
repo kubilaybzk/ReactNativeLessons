@@ -10,8 +10,6 @@ let FirstObj = {
   },
 };
 
-
-
 //Ana sayfa kullanıcının karşısına çıkan ilk sayfa.
 function HomeScreen({navigation}) {
   return (
@@ -38,13 +36,23 @@ function DetailsScreen({route, navigation}) {
       <Text>otherParam: {JSON.stringify(otherParam)}</Text>
       <Button
         title="Go to Details... again"
-        onPress={() => navigation.navigate('Details', {
-          itemId: Math.floor(Math.random() * 100),
-          otherParam: {name: 'Ali' + Math.floor(Math.random() * 100)},
-        })}
+        onPress={() =>
+          navigation.push('Details', {
+            itemId: Math.floor(Math.random() * 100),
+            otherParam: {name: 'Ali' + Math.floor(Math.random() * 100)},
+          })
+        }
       />
       <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
       <Button title="Go back" onPress={() => navigation.goBack()} />
+      <Button
+        title="Update"
+        onPress={() =>
+          navigation.setParams({
+            otherParam: {name: 'BzkStore' + Math.floor(Math.random() * 100)},
+          })
+        }
+      />
     </View>
   );
 }
