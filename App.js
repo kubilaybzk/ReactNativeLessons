@@ -1,59 +1,52 @@
 import * as React from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text, Button,TextInput} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-//Gönderilecek bir obje olsun.
-let FirstObj = {
-  itemId: 86,
-  otherParam: {
-    name: 'Kubilay',
-  },
-};
 
-//Ana sayfa kullanıcının karşısına çıkan ilk sayfa.
-function HomeScreen({navigation}) {
+
+
+function HomeScreen({ navigation, route }) {
+  React.useEffect(() => {
+    if (route.params?.post) {
+      // Post updated, do something with `route.params.post`
+      // For example, send the post to the server
+    }
+  }, [route.params?.post]);
+
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Button
-        title="Go to Details"
-        onPress={() => {
-          /* 1. Navigate to the Details route with params */
-          navigation.navigate('Details', FirstObj);
-        }}
+        title="Veri Oluştur"
+        onPress={() => navigation.navigate('CreatePost')}
       />
+      <Text style={{ margin: 10 }}>Veri: {route.params?.post}</Text>
     </View>
   );
 }
 
-function DetailsScreen({route, navigation}) {
-  /* 2. Get the param */
-  const {itemId, otherParam} = route.params;
+function CreatePostScreen({ navigation, route }) {
+  const [postText, setPostText] = React.useState('');
+
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Details Screen</Text>
-      <Text>itemId: {JSON.stringify(itemId)}</Text>
-      <Text>otherParam: {JSON.stringify(otherParam)}</Text>
-      <Button
-        title="Go to Details... again"
-        onPress={() =>
-          navigation.push('Details', {
-            itemId: Math.floor(Math.random() * 100),
-            otherParam: {name: 'Ali' + Math.floor(Math.random() * 100)},
-          })
-        }
+    <>
+      <TextInput
+        multiline
+        placeholder="Gönderilecek veri ne olsun?"
+        style={{ height: 200, padding: 10, backgroundColor: 'white' }}
+        value={postText}
+        onChangeText={setPostText}
       />
-      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
-      <Button title="Go back" onPress={() => navigation.goBack()} />
       <Button
-        title="Update"
-        onPress={() =>
-          navigation.setParams({
-            otherParam: {name: 'BzkStore' + Math.floor(Math.random() * 100)},
-          })
-        }
+        title="Veriyi Yolla"
+        onPress={() => {
+          navigation.navigate({
+            name: 'Home',
+            params: { post: postText },
+            merge: true,
+          });
+        }}
       />
-    </View>
+    </>
   );
 }
 
@@ -64,7 +57,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="CreatePost" component={CreatePostScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
